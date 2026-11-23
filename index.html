@@ -25,7 +25,9 @@ html,body{margin:0;height:100%;background:#7CCBEB;overflow:hidden;font-family:"M
 #stats em{font-style:normal;font-size:10.5px;font-weight:800;color:#7A889C}
 #stats b{font-size:14px;font-weight:900;color:var(--ink)}#stats .dead b{color:#D64545}#stats .kill b{color:#3E8E1F}
 #info{position:absolute;left:8px;top:90px;background:rgba(20,44,78,.62);color:#fff;border-radius:12px;padding:6px 10px;font-size:11px;font-weight:800;min-width:150px;max-width:240px}
-#talk{position:absolute;left:12px;right:12px;top:150px;display:flex;flex-direction:column;gap:8px;pointer-events:none;z-index:5}#talk .b{align-self:flex-start;max-width:82%;background:#fff;color:#1E2A3A;border-radius:14px;padding:7px 11px;font-size:12px;font-weight:700;line-height:1.45;box-shadow:0 3px 10px rgba(0,0,0,.18);position:relative;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s}#talk .b.r{align-self:flex-end}#talk .b.on{opacity:1;transform:none}#talk .b:after{content:"";position:absolute;left:16px;bottom:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}#talk .b.r:after{left:auto;right:16px}#talk .b em{display:block;font-style:normal;font-size:10.5px;font-weight:900;color:#2F5FC4;margin-bottom:1px}
+#talk{position:absolute;left:12px;right:12px;top:150px;display:flex;flex-direction:column;gap:5px;pointer-events:none;z-index:5}#talk .b{align-self:flex-start;max-width:62%;background:rgba(255,255,255,.5);color:#1E2A3A;border-radius:9px;padding:4px 7px;font-size:9px;font-weight:700;line-height:1.4;box-shadow:0 2px 6px rgba(0,0,0,.08);position:relative;opacity:0;transform:translateY(4px);transition:opacity .35s,transform .35s}#talk .b.r{align-self:flex-end}#talk .b.on{opacity:1;transform:none}#talk .b:after{content:"";position:absolute;left:12px;bottom:-4px;border:4px solid transparent;border-top-color:rgba(255,255,255,.5);border-bottom:0}#talk .b.r:after{left:auto;right:12px}#talk .b em{display:block;font-style:normal;font-size:8px;font-weight:900;color:#2F5FC4;margin-bottom:1px}
+#cd{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:6}#cd b{font:900 84px "Malgun Gothic",sans-serif;color:#fff;text-shadow:0 4px 0 #1D2230,0 0 24px rgba(0,0,0,.35);animation:cdp 1s ease-out infinite}#cd small{margin-top:4px;font-size:12px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}#cd button{pointer-events:auto;margin-top:14px;border:0;background:#fff;color:#1D2230;font:900 13px "Malgun Gothic",sans-serif;border-radius:14px;padding:9px 22px;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer}@keyframes cdp{0%{transform:scale(1.5);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:.85}}
+#over #again2{background:#EEF1F6;color:#1D2230;margin-left:6px}#res{margin-top:6px;text-align:left;font-size:12px}#res canvas{display:block;width:100%;border-radius:14px;margin:4px 0 8px}#res .mvp{text-align:center;font-weight:900;font-size:13px;color:#B07A12;margin-bottom:6px}#res .r{display:flex;justify-content:space-between;padding:3px 2px;border-bottom:1px solid #EEF1F6}#res .r b{font-weight:900}
 #infoT:not(:empty){display:block;margin-top:2px;color:#E8EEF6}
 #wavebar{height:5px;background:rgba(255,255,255,.25);border-radius:3px;margin-top:4px;overflow:hidden;display:none}#wavebar i{display:block;height:100%;background:#FF8A5C;width:0}
 #start{position:absolute;left:10px;right:10px;bottom:178px;text-align:center;border:0;background:#1D2230;color:#fff;font:900 16px "Malgun Gothic",sans-serif;border-radius:16px;padding:10px 16px;box-shadow:0 4px 0 #000;cursor:pointer;white-space:nowrap}
@@ -60,7 +62,7 @@ html,body{margin:0;height:100%;background:#7CCBEB;overflow:hidden;font-family:"M
 #toast{position:absolute;left:50%;top:164px;transform:translateX(-50%);background:rgba(20,30,50,.85);color:#fff;border-radius:12px;padding:7px 12px;font-size:12px;font-weight:800;display:none;white-space:nowrap;pointer-events:none}
 #banner{position:absolute;left:0;right:0;top:40%;text-align:center;font:900 22px "Malgun Gothic",sans-serif;color:#fff;text-shadow:0 2px 0 #2F5FC4,0 0 14px rgba(47,95,196,.8);display:none;pointer-events:none}
 #over{position:absolute;inset:0;background:rgba(10,20,40,.55);display:none;align-items:center;justify-content:center}
-#over>div{background:#fff;border-radius:20px;padding:22px 26px;text-align:center;max-width:300px}
+#over>div{background:#fff;border-radius:20px;padding:22px 26px;text-align:center;max-width:300px;max-height:88vh;overflow:auto}
 #over h2{margin:0 0 6px}#over button{border:0;background:#1D2230;color:#fff;font:900 14px "Malgun Gothic",sans-serif;border-radius:16px;padding:10px 22px;margin-top:10px;cursor:pointer}
 #intro{position:absolute;inset:0;z-index:50;background:linear-gradient(180deg,#1E2B4D 0%,#3E5C9E 42%,#8CC4E8 70%,#8FCB62 100%);overflow:hidden}
 #intro .scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px}
@@ -102,6 +104,7 @@ html,body{margin:0;height:100%;background:#7CCBEB;overflow:hidden;font-family:"M
   <div id="info"><div id="stage"></div><span id="infoT"></span><div id="wavebar"><i id="wavei"></i></div></div>
   <button id="start"></button>
   <div id="talk"></div>
+  <div id="cd"><b id="cdN">5</b><small id="cdT"></small><button id="cdX">시작 취소</button></div>
   <div id="banner"></div>
   <div id="brief"><div class="bx"><h3 id="bT"></h3><div id="bB"></div><button id="bC">닫기</button></div></div>
   <div id="popup"></div>
@@ -110,7 +113,7 @@ html,body{margin:0;height:100%;background:#7CCBEB;overflow:hidden;font-family:"M
   <div id="intro"><div id="title" class="scr"><canvas id="titleBg"></canvas><canvas id="titleTxt"></canvas><button id="titleBtn">게임 시작</button></div>
     <div id="story" class="scr" style="display:none"><div class="scard"><canvas id="storyArt"></canvas><div id="storyTalk"></div><div class="dots"><i></i><i></i><i></i></div><div class="sbtns"><button id="skipBtn">건너뛰기</button><button id="storyBtn">다음</button></div></div></div></div>
   <div id="ending"><canvas id="endArt"></canvas><div class="etitle">Happy Wedding</div><div class="etalk"><div id="endTalk"></div><button id="endBtn">다음</button></div></div>
-  <div id="over"><div><h2 id="overT"></h2><div id="overD"></div><button id="again"></button></div></div>
+  <div id="over"><div><h2 id="overT"></h2><div id="overD"></div><div id="res"></div><button id="again"></button><button id="again2" style="display:none"></button></div></div>
 </div>
 <script>
 /* ============ 최소 복셀 엔진 (design_v4.html 과 같은 방식) ============ */
@@ -1145,7 +1148,7 @@ function rDmgMul(type,tier){return (1+tier*.6)*(tier>=3?(isMagic(type)?1.25:1.1)
 
 /* ======================= 상태 ======================= */
 let G=null;
-function newMapState(no,keep){loadMap(no);G={coins:START_COINS[no-1],stage:1,hp:100,state:'build',walls:new Map(),groups:[],mons:[],shots:[],mshots:[],fx:[],fires:[],ices:[],sheets:[],pillars:[],remains:[],wver:0,free:FREE_RULE(1)[0],aid:0,st:{kills:{},dead:{},total:0},last:null,leaders:{},
+function newMapState(no,keep){if(typeof stopCount==='function'&&beginCount.on){stopCount();}loadMap(no);G={coins:START_COINS[no-1],stage:1,hp:100,state:'build',walls:new Map(),groups:[],mons:[],shots:[],mshots:[],fx:[],fires:[],ices:[],sheets:[],pillars:[],remains:[],wver:0,free:FREE_RULE(1)[0],aid:0,st:{kills:{},dead:{},total:0},mapSt:{kills:{},dead:{},total:0},last:null,leaders:{},
   sched:[],qTotal:1,waveT:0,t:0,tool:null,sel:null,cannons:[{cd:1},{cd:2.2}],kills:keep?keep.kills:0,deaths:keep?keep.deaths:0,adam:null,adamUsed:false,shake:0,castleHit:0,gid:0};
   fieldsDirty=true;dirtyWalls=true;hidePopup();renderCards();stageReady();$('over').style.display='none';}
 const refundRate=()=>G.state==='build'?1:.5;
@@ -1437,7 +1440,7 @@ function startWave(){if(G.state!=='build')return;const q=waveQueue(MAPNO,G.stage
   // 2~9단계: 몬스터 종류마다 리더 1명 — 크기 2배·체력 3배 · 주변 3칸 몬스터를 이끌고 다른 길로 돌아서 공격
   G.leaders={};if(G.stage>=2&&G.stage<=9&&!boss){const by={};sch.forEach((o,i)=>{if(o.n!==boss)(by[o.n]=by[o.n]||[]).push(i);});
     for(const n in by){const ix=by[n],pick=ix[Math.floor(Math.random()*Math.max(1,Math.ceil(ix.length*.25)))];sch[pick].leader=true;sch[pick].tactic=Math.random()<.5?'formation':'crane';}}
-  G.sched=sch;G.qTotal=sch.length;G.waveT=0;G.state='wave';$('info').style.display='';closeBrief();showTalk();G.tool=G.tool&&G.tool.kind==='unit'?G.tool:null;renderCards();
+  G.sched=sch;G.qTotal=sch.length;G.waveT=0;G.state='wave';$('info').style.display='';closeBrief();snapStage();G.tool=G.tool&&G.tool.kind==='unit'?G.tool:null;renderCards();
   $('start').style.display='none';$('wavebar').style.display='block';hidePopup();}
 function spawn(o){const m=MONM[o.n];if(!m)return;const g=MG[m.grade]||MG.일반,mul=(isBossG(m.grade)?1:1+(G.stage-1)*(.8/9))*MAPMUL*10/10;   /* 체력: 10단계에서 1.8배 (보스는 맵 보정만) */
   const mv=(m.t==='flyer'||m.t==='drake'||o.n==='임프')?'fly':m.t==='spider'?'climb':'walk';
@@ -1460,15 +1463,26 @@ let SRC=null;
 const WX={clear:{n:'맑음',d:'보통'},cloud:{n:'구름 조금',d:'보통'},rain:{n:'비',d:'화살 명중·불길 20% 감소 · 전기·독 20% 증가 · 근접 유닛·공중 몬스터 20% 느림 · 지상 몬스터 10% 빠름'},snow:{n:'눈',d:'불길 50% 감소 · 얼음 마법 30% 강화 · 범위 넓어짐 · 근접 유닛·공중 몬스터 40% 느림'},fog:{n:'안개',d:'안개 속 몬스터는 화살을 50% 피해요'}};
 const fireK=()=>G.wx==='rain'?.8:G.wx==='snow'?.5:1,iceK=()=>G.wx==='snow'?1.3:1,wetK=()=>G.wx==='rain'?1.2:1;
 /* 날씨 말풍선 — 시작하면 유닛들이 날씨 이야기를 해요 */
-const WX_TALK={clear:[['궁수','하늘이 맑으니 화살이 잘 날아가겠어'],['중장보병','싸우기 딱 좋은 날씨네요']],
-  cloud:[['창병','구름이 조금 꼈지만 문제없어'],['마법사','오늘은 마법이 평소처럼 잘 나가겠네요']],
-  rain:[['궁수','오늘은 화살 명중률이 떨어지겠군, 조심해야겠어'],['얼음술사','비가 오니 얼음벽이 더 단단해지겠군'],['마법사','화염 마법이 비 때문에 효과가 안 날 것 같아'],['창기사','땅이 질척해서 말이 느려지겠어요'],['레인저','젖은 날개로는 하늘 몬스터도 느려지겠지 · 대신 땅 위 몬스터는 빨라질 거야']],
-  snow:[['얼음술사','빙결 마법 효과가 증폭되겠군'],['중장보병','눈이 오니 얼음벽이 더 단단해지겠군'],['중장보병','길이 얼어서 이동속도가 느려질 것 같아'],['마법사','눈 때문에 불길이 금방 꺼지겠네요'],['드래곤헌터','눈보라 속에선 하늘 몬스터도 느려질 거야']],
-  fog:[['궁수','안개 속 몬스터는 잘 안 보여, 화살이 빗나가겠어'],['엘프','안개가 걷히는 틈을 노리자']]};
-function showTalk(){const box=$('talk');if(!box)return;clearTimeout(showTalk.h);box.innerHTML='';const L=WX_TALK[G.wx]||[];let i=0;
-  const next=()=>{if(i>=L.length){showTalk.h=setTimeout(()=>{box.querySelectorAll('.b').forEach(b=>b.classList.remove('on'));showTalk.h=setTimeout(()=>box.innerHTML='',400);},4000);return;}
-    const [who,s]=L[i];const b=document.createElement('div');b.className='b'+(i%2?' r':'');b.innerHTML=`<em>${who}</em>${s}`;box.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));i++;showTalk.h=setTimeout(next,2200);};
+const WX_TALK={clear:[['archer','하늘이 맑으니 화살이 잘 날아가겠어'],['heavy','싸우기 딱 좋은 날씨네요'],['mage','오늘은 마법이 평소처럼 잘 나가겠네요']],
+  cloud:[['spear','구름이 조금 꼈지만 문제없어'],['mage','오늘은 마법이 평소처럼 잘 나가겠네요'],['archer','바람이 잔잔해서 활 쏘기 괜찮겠어']],
+  rain:[['archer','오늘은 화살 명중률이 떨어지겠군, 조심해야겠어'],['mage','화염 마법이 비 때문에 효과가 안 날 것 같아'],['icemage','비가 오니 얼음벽이 더 단단해지겠군'],['lancer','땅이 질척해서 말이 느려지겠어요'],['heavy','빗길이라 발이 무거워지겠어'],['ranger','젖은 날개로는 하늘 몬스터도 느려지겠지'],['crossbow','땅 위 몬스터들은 빗길에 더 빨리 달려오겠어']],
+  snow:[['icemage','빙결 마법 효과가 증폭되겠군'],['heavy','길이 얼어서 이동속도가 느려질 것 같아'],['guard','눈이 오니 얼음벽이 더 단단해지겠군'],['mage','눈 때문에 불길이 금방 꺼지겠네요'],['hunter','눈보라 속에선 하늘 몬스터도 느려질 거야']],
+  fog:[['archer','안개 속 몬스터는 잘 안 보여, 화살이 빗나가겠어'],['elf','안개가 걷히는 틈을 노리자'],['ranger','안개 속에선 귀를 기울여야 해']]};
+/* 날씨 말풍선 — 단계 시작 전(카운트다운 동안), 그 유닛이 배치되어 있을 때만 */
+function showTalk(){const box=$('talk');if(!box)return;clearTimeout(showTalk.h);box.innerHTML='';
+  const top={};for(const g of G.groups)if(g.mem.length&&(top[g.type]==null||g.tier>top[g.type]))top[g.type]=g.tier;
+  const L=(WX_TALK[G.wx]||[]).filter(([t])=>top[t]!=null).slice(0,4);let i=0;
+  const next=()=>{if(i>=L.length){showTalk.h=setTimeout(hideTalk,2500);return;}
+    const [t,s]=L[i];const b=document.createElement('div');b.className='b'+(i%2?' r':'');b.innerHTML=`<em>${UDEF[t].names[top[t]]}</em>${s}`;box.appendChild(b);requestAnimationFrame(()=>b.classList.add('on'));i++;showTalk.h=setTimeout(next,1100);};
   next();}
+function hideTalk(){const box=$('talk');clearTimeout(showTalk.h);box.querySelectorAll('.b').forEach(b=>b.classList.remove('on'));showTalk.h=setTimeout(()=>box.innerHTML='',400);}
+/* 시작 카운트다운 5·4·3·2·1 — 시작 취소 가능 */
+function beginCount(){if(G.state!=='build'||beginCount.on)return;beginCount.on=true;closeBrief();hidePopup();$('start').style.display='none';
+  let n=5;const cd=$('cd'),N=$('cdN');$('cdT').textContent=`${MAPNAMES[MAPNO-1]} ${G.stage}단계 · 날씨 ${WX[G.wx].n}`;cd.style.display='flex';
+  const show=()=>{N.textContent=n;N.style.animation='none';void N.offsetWidth;N.style.animation='';};show();showTalk();
+  beginCount.h=setInterval(()=>{n--;if(n<=0){stopCount();startWave();return;}show();},1000);}
+function stopCount(){clearInterval(beginCount.h);beginCount.on=false;$('cd').style.display='none';}
+function cancelCount(){if(!beginCount.on)return;stopCount();hideTalk();if(G.state==='build')$('start').style.display='';}
 /* 날씨 이동속도: 비 — 근접 유닛·공중 몬스터 20% 느리게, 지상 몬스터 10% 빠르게 · 눈 — 근접 유닛·공중 몬스터 40% 느리게 */
 const wxUnitSpd=()=>G.wx==='rain'?.8:G.wx==='snow'?.6:1,wxMonSpd=fly=>fly?wxUnitSpd():G.wx==='rain'?1.1:1;
 const ARROWS=['archer','elf','crossbow','ranger','hunter'];
@@ -1782,6 +1796,7 @@ function faceTo(vx,vy,cur){if(Math.hypot(vx,vy)<.02)return cur??0;const A=[Math.
   if(cur!==undefined){const d=Math.abs(((a-A[cur])+3*Math.PI)%(2*Math.PI)-Math.PI);if(d<Math.PI/4+.3)return cur;}return Math.abs(vx)>Math.abs(vy)?(vx>0?1:3):(vy>0?0:2);}
 function steer(u,tx,ty,spd,dt){const dx=tx-u.x,dy=ty-u.y,dd=Math.hypot(dx,dy);let dvx=0,dvy=0;if(dd>.04){const s=Math.min(spd*slopeMul(u.x,u.y,dx/dd,dy/dd),dd*5);dvx=dx/dd*s;dvy=dy/dd*s;}const k=Math.min(1,dt*7);u.vx+=(dvx-u.vx)*k;u.vy+=(dvy-u.vy)*k;moveTo(u,u.x+u.vx*dt,u.y+u.vy*dt,'unit');return dd;}
 function stageClear(){const s=G.stage,bonus=(s<=3?[235,410,635][s-1]:s>=9?800:Math.round(635+(s-3)*(800-635)/6))+(MAPNO-1)*100;   /* 클리어 보너스: 235·410·635 → 4~8단계 점점 올라 9~10단계 800 · 맵마다 +100 */
+  {const A=G.mapSt;for(const k in G.st.kills)A.kills[k]=(A.kills[k]||0)+G.st.kills[k];for(const k in G.st.dead)A.dead[k]=(A.dead[k]||0)+G.st.dead[k];A.total+=G.st.total||0;}   /* 맵 전체 기록 */
   G.coins+=bonus;for(const [,w] of G.walls){w.hp=w.max;w.hit=0;}   /* 안 부서진 성벽은 체력 회복 */
  G.hp=Math.min(100,G.hp+20);G.state='build';
   for(const g of G.groups){g.pos=[...g.cell];for(const u of g.mem){const n=newMember(g,u.i);Object.assign(u,{x:n.x,y:n.y,z:n.z,layer:n.layer,cell:n.cell,path:[],arrive:false,tg:null,st:'idle',kb:0,buff:0,hp:u.max});   /* 살아남은 유닛은 체력을 모두 회복 */}}
@@ -1981,11 +1996,44 @@ function showWallPopup(x,y){const w=G.walls.get(key(x,y));if(!w)return;const g=g
     (build?`<button id="del" class="del">삭제 +${w.spent+(g?g.spent:0)}</button>`:'')+`<button id="cls">닫기</button>`;
   pp.style.display='block';G.sel={cell:[x,y]};if(build)$('del').onclick=()=>deleteWall(x,y);$('cls').onclick=hidePopup;}
 function hidePopup(){$('popup').style.display='none';if(G)G.sel=null;}
-function gameOver(kind){if(kind==='win'){showEnding();return;}const o=$('over');o.style.display='flex';const b=$('again');
-  if(kind==='lose'){$('overT').textContent='성이 무너졌어요';$('overD').textContent=`${MAPNAMES[MAPNO-1]} ${G.stage}단계에서 패배 · 처치 ${G.kills} · 사망 ${G.deaths}`;b.textContent='이 맵 다시 하기';b.onclick=()=>{newMapState(MAPNO);centerView();};}
-  else if(kind==='map'){$('overT').textContent=`${MAPNAMES[MAPNO-1]} 클리어!`;$('overD').textContent=`다음 맵: ${MAPNAMES[MAPNO]} · 성벽과 유닛은 새로 시작해요`;b.textContent='다음 맵으로';b.onclick=()=>{newMapState(MAPNO+1,G);draw.centered=false;};}
+/* 단계 시작 순간을 기억해 두었다가 패배하면 그 단계를 다시 할 수 있어요 */
+function snapStage(){G.snap={stage:G.stage,coins:G.coins,hp:G.hp,free:G.free,aid:G.aid,kills:G.kills,deaths:G.deaths,adamUsed:G.adamUsed,adam:G.adam&&G.adam.hp>0?{...G.adam}:null,
+  mapSt:JSON.parse(JSON.stringify(G.mapSt)),last:G.last,walls:[...G.walls].map(([k,w])=>[k,{...w}]),groups:G.groups.map(g=>({id:g.id,type:g.type,tier:g.tier,cell:[...g.cell],spent:g.spent,is:g.mem.map(u=>u.i)}))};}
+function retryStage(){const s=G.snap;if(!s){newMapState(MAPNO);return;}
+  Object.assign(G,{stage:s.stage,coins:s.coins,hp:s.hp,free:s.free,aid:s.aid,kills:s.kills,deaths:s.deaths,adamUsed:s.adamUsed,mapSt:JSON.parse(JSON.stringify(s.mapSt)),last:s.last,
+    adam:s.adam?{...s.adam,x:s.adam.home[0],y:s.adam.home[1],tg:null,hp:s.adam.max}:null,walls:new Map(s.walls.map(([k,w])=>[k,{...w,hit:0}])),
+    mons:[],shots:[],mshots:[],fx:[],fires:[],ices:[],sheets:[],pillars:[],remains:[],sched:[],pend:[],qTotal:1,waveT:0,state:'build',st:{kills:{},dead:{},total:0},sel:null,tool:null,shake:0,castleHit:0,leaders:{}});
+  G.groups=s.groups.map(o=>{const g={id:o.id,type:o.type,tier:o.tier,cell:[...o.cell],pos:[...o.cell],mem:[],spent:o.spent,think:0,vcd:1};g.mem=o.is.map(i=>newMember(g,i));return g;});
+  wallsChanged();fieldsDirty=true;dirtyWalls=true;$('over').style.display='none';hidePopup();stageReady();}
+/* 맵 클리어 기록: 처치 TOP 3 · 사망 · 총 처치 + MVP 장면 */
+function typeOfName(n){if(n==='왕자 아담')return ['adam',0];if(n==='아름 공주')return ['areum',0];for(const t in UDEF){if(['adam','prince','areum'].includes(t))continue;const i=UDEF[t].names.indexOf(n);if(i>=0)return [t,i];}return null;}
+function mapResults(){const A=G.mapSt,ks=Object.entries(A.kills).filter(k=>k[0]!=='기타').sort((a,b)=>b[1]-a[1]),dn=Object.values(A.dead).reduce((a,b)=>a+b,0),mvp=ks.find(k=>typeOfName(k[0]));
+  const md=['🥇','🥈','🥉'];let h='';
+  if(mvp)h+=`<canvas id="mvpArt"></canvas><div class="mvp">MVP · ${mvp[0]} · ${mvp[1]}마리 처치</div>`;
+  h+=ks.slice(0,3).map((k,i)=>`<div class="r"><span>${md[i]} ${k[0]}</span><b>${k[1]}킬</b></div>`).join('')||'<div class="r"><span>처치 기록 없음</span></div>';
+  h+=`<div class="r"><span>유닛 사망</span><b>${dn}</b></div><div class="r"><span>총 몬스터 처치</span><b>${A.total}</b></div>`;
+  $('res').innerHTML=h;if(mvp){const [t,k]=typeOfName(mvp[0]);mvpShow(t,k);}}
+let mvpRAF=0;
+function mvpShow(type,tier){const c=$('mvpArt');if(!c)return;cancelAnimationFrame(mvpRAF);const t0=performance.now();
+  const loop=now=>{if(!document.body.contains(c)||$('over').style.display==='none')return;const t=(now-t0)/1000,W_=248,H_=150;c.style.height=H_+'px';
+    paintScene(c,W_,H_,1.15,1.2,2.05,x=>{
+      overlays.length=0;
+      add({x:.9,y:.9,z:-.45,w:1.2,d:1.2,h:.25,c:'#C9962F',stroke:'rgba(0,0,0,.1)'});add({x:1.05,y:1.05,z:-.2,w:.9,d:.9,h:.2,c:'#F0C75A',stroke:'rgba(0,0,0,.08)'});   /* 황금 단상 */
+      makeUnit(type,Math.min(tier,2),1.5,1.5,0,1.2,'attack',(t/1.1)%1,0);
+      overlays.push(()=>{const p=P(1.5,1.5,1.6);
+        x.save();x.globalCompositeOperation='lighter';for(let i=0;i<10;i++){const a=t*.5+i*TAU/10;x.fillStyle=`rgba(255,226,120,${.10+.05*Math.sin(t*3+i)})`;x.beginPath();x.moveTo(p[0],p[1]);x.lineTo(p[0]+Math.cos(a)*220,p[1]+Math.sin(a)*220);x.lineTo(p[0]+Math.cos(a+.16)*220,p[1]+Math.sin(a+.16)*220);x.fill();}x.restore();   /* 빛줄기 */
+        for(let i=0;i<34;i++){const q=(hash(i,3)+t*.25*(.6+hash(i,4)))%1,px=hash(i,1)*W_+Math.sin(t*2+i)*8,py=q*H_;x.fillStyle=['#FFD23F','#FF6FA8','#5FC9F8','#7BE08A','#FFFFFF'][i%5];x.save();x.translate(px,py);x.rotate(t*3+i);x.fillRect(-2,-1,4,2.4);x.restore();}   /* 꽃가루 */
+        x.font=`900 15px ${F}`;x.textAlign='center';x.fillStyle='#FFE27A';x.strokeStyle='rgba(60,30,0,.7)';x.lineWidth=3;const cy=16+Math.sin(t*2.4)*2;x.strokeText('★ MVP ★',W_/2,cy+8);x.fillText('★ MVP ★',W_/2,cy+8);});
+    },['#3A2A6B','#F3B84A']);
+    mvpRAF=requestAnimationFrame(loop);};
+  mvpRAF=requestAnimationFrame(loop);}
+function gameOver(kind){const o=$('over'),b=$('again'),b2=$('again2');$('res').innerHTML='';b2.style.display='none';o.style.display='flex';
+  if(kind==='lose'){$('overT').textContent='성이 무너졌어요';$('overD').textContent=`${MAPNAMES[MAPNO-1]} ${G.stage}단계에서 패배 · 처치 ${G.kills} · 사망 ${G.deaths}`;
+    b.textContent=`${G.stage}단계 다시 하기`;b.onclick=()=>retryStage();b2.style.display='';b2.textContent='처음부터 다시';b2.onclick=()=>{newMapState(1);centerView();};}
+  else if(kind==='map'){$('overT').textContent=`${MAPNAMES[MAPNO-1]} 클리어!`;$('overD').textContent=`다음 맵: ${MAPNAMES[MAPNO]} · 성벽과 유닛은 새로 시작해요`;mapResults();b.textContent='다음 맵으로';b.onclick=()=>{cancelAnimationFrame(mvpRAF);newMapState(MAPNO+1,G);draw.centered=false;};}
+  else if(kind==='win'){$('overT').textContent=`${MAPNAMES[MAPNO-1]} 클리어!`;$('overD').textContent='마왕을 물리쳤어요!';mapResults();b.textContent='엔딩 보기';b.onclick=()=>{cancelAnimationFrame(mvpRAF);showEnding();};}
   else{$('overT').textContent='모든 맵 클리어!';$('overD').textContent=`처치 ${G.kills} · 사망 ${G.deaths}`;b.textContent='처음부터';b.onclick=()=>{newMapState(1);draw.centered=false;};}}
-$('start').onclick=startWave;$('bC').onclick=closeBrief;
+$('start').onclick=beginCount;$('cdX').onclick=cancelCount;$('bC').onclick=closeBrief;
 const VIEW_ICON={top:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#26344F" stroke-width="2.2" stroke-linejoin="round"><path d="M4 8.5h3.2l1.6-2.5h6.4l1.6 2.5H20v10H4z"/><circle cx="12" cy="13.3" r="3.4"/></svg>',
   se:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#26344F" stroke-width="2.2" stroke-linejoin="round"><path d="M4 8.5h3.2l1.6-2.5h6.4l1.6 2.5H20v10H4z"/><circle cx="12" cy="13.3" r="3.4"/></svg>'};
 /* 터치: 탭 = 배치·선택, 끌기 = 이동, 두 손가락 = 확대/축소, 꾹 누르기 = 성벽 삭제 */
