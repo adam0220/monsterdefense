@@ -1967,59 +1967,65 @@ const d=Math.hypot(m.x-u.x,m.y-u.y)||1;
   if(G.state==='wave'&&!G.sched.length&&!G.mons.length)stageClear();}
 function o_col(m){return m.name==='임프'?'#FF7A2F':/마법|마도|샤먼|주술|네크로|밴시/.test(m.name)?'#B46CFF':'#6B4A2A';}
 /* ======================= 소환사 · 소환수 =======================
-   웨이브가 시작되면 소환 · 소환수 무리가 1마리라도 살아 있으면 다음 소환은 30초, 모두 없으면 20초 · 최대 2무리
-   소환수는 소환사 성벽 주변 4칸 안에서 싸워요 · 1~2단계 소환수(늑대·곰)는 준보스·보스를 보면 도망 · 드래곤은 땅 5초 · 하늘 5초를 번갈아요 */
-const PET={wolf:{hp:12,dmg:.5,dur:.9,spd:2.4},bear:{hp:24,dmg:.9,dur:1.3,spd:1.7},fire:{hp:40,dmg:1.6,dur:2.2,spd:2.2,fly:1},ice:{hp:40,dmg:1.3,dur:2.2,spd:2.2,fly:1},bolt:{hp:40,dmg:1.4,dur:2.2,spd:2.2,fly:1},elder:{hp:80,dmg:2.8,dur:2,spd:2,fly:1}};
-const PET_SC=.7,PET_R=4;
+   소환사는 5칸 안에서 몬스터를 발견하면 그 자리에 소환 마법 · 1칸 안 몬스터 1초 기절
+   다음 소환: 소환수가 1마리라도 살아 있으면 30초, 모두 없으면 20초 · 최대 2무리 · 소환수는 30초 동안 머물러요
+   소환수는 4칸 안의 몬스터를 찾아가 공격 · 몬스터도 소환수를 공격해요 · 1~2단계 소환수(늑대·곰)는 준보스·보스를 보면 도망 · 드래곤은 땅 5초 · 하늘 5초를 번갈아요 */
+const PET={wolf:{hp:9.6,dmg:.5,dur:.9,spd:2.4},bear:{hp:19.2,dmg:.9,dur:1.3,spd:1.7},fire:{hp:32,dmg:1.6,dur:2.2,spd:2.2,fly:1},ice:{hp:32,dmg:1.3,dur:2.2,spd:2.2,fly:1},bolt:{hp:32,dmg:1.4,dur:2.2,spd:2.2,fly:1},elder:{hp:64,dmg:2.8,dur:2,spd:2,fly:1}};   /* 체력 20% 낮춤 */
+const PET_SC=.7,PET_R=4,DRAGON_R=8,PET_LIFE=30,SUM_R=5;   /* 드래곤 활동 범위 8칸 */
 function petSprite(k,mode,face,ph){const f=fr(ph),big_=PET[k].fly?1.7:1.15;return sprite(`p|${k}|${mode}|${face}|${f}`,110*Math.max(1,SUM[k].sc*1.4)*big_*PET_SC,()=>makeSummon(k,.5,.5,0,PET_SC,mode,(f+.5)/NF,face));}
 function petPacks(g){return new Set(G.pets.filter(p=>p.own===g&&p.hp>0).map(p=>p.pack));}
-function freeGroundNear(cx,cy){for(let r=1;r<=4;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;const x=cx+dx,y=cy+dy;if(inb(GM,x,y)&&!G.walls.has(key(x,y))&&passT(GM.g[y][x])&&!isCastle(GM,x,y))return [x,y];}return null;}
-function summonPack(u,g){const t=g.tier,pk=++G.pid,hx=g.cell[0]+.5,hy=g.cell[1]+.5,mul=1+t*.3;
+const okGround=(x,y)=>{const cx=Math.floor(x),cy=Math.floor(y);return inb(GM,cx,cy)&&!isCastle(GM,cx,cy)&&!G.walls.has(key(cx,cy))&&passT(GM.g[cy][cx]);};
+function freeGroundNear(cx,cy){for(let r=1;r<=4;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;const x=cx+dx,y=cy+dy;if(okGround(x+.5,y+.5))return [x,y];}return null;}
+function summonPack(u,g,tg){const t=g.tier,pk=++G.pid,mul=1+t*.3,tx=tg.x,ty=tg.y;
   const hasElder=G.pets.some(p=>p.own===g&&p.k==='elder'&&p.hp>0);const rnd=()=>['fire','ice','bolt'][Math.floor(Math.random()*3)];
   const ks=t===0?['wolf','wolf','wolf']:t===1?Array(5).fill('bear'):t===2?[rnd()]:[hasElder?rnd():'elder',...Array(8).fill('bear')];   /* 고룡은 1마리만 · 두 번째는 화염·얼음·번개 중 1마리 */
-  ks.forEach((k,i)=>{const P_=PET[k],a=i/ks.length*TAU+Math.random()*.4,r=P_.fly?.6:1+(i%3)*.35;let x=hx+Math.cos(a)*r,y=hy+Math.sin(a)*r;
-    if(!P_.fly){const cx=Math.floor(x),cy=Math.floor(y);if(!inb(GM,cx,cy)||G.walls.has(key(cx,cy))||!passT(GM.g[cy][cx])){const c=freeGroundNear(g.cell[0],g.cell[1]);if(!c)return;x=c[0]+.5+(Math.random()-.5)*.5;y=c[1]+.5+(Math.random()-.5)*.5;}}
+  ks.forEach((k,i)=>{const P_=PET[k];let x=tx,y=ty,ok=false;
+    for(let tr=0;tr<12&&!ok;tr++){const a=i/ks.length*TAU+tr*.7,r=.55+(i%3)*.3+tr*.08;x=tx+Math.cos(a)*r;y=ty+Math.sin(a)*r;ok=P_.fly||okGround(x,y);}
+    if(!ok){const c=freeGroundNear(Math.floor(tx),Math.floor(ty));if(!c)return;x=c[0]+.5;y=c[1]+.5;}
     G.pets.push({own:g,pack:pk,k,hero:true,pet:true,layer:0,x,y,z:0,hp:P_.hp*mul,max:P_.hp*mul,dmg:P_.dmg*mul,tg:null,aph:0,face:0,vx:0,vy:0,walk:Math.random(),ph:Math.random(),st:'idle',sm:1,kb:0,
-      flee:0,cowardly:t<=1,life:1e9,air:false,phT:5,cd:.5+Math.random()});});
-  if(G.fx.length<150)G.fx.push({k:'boom',x:hx,y:hy,t:0,r:1.4,c:t>=2?'#B77BFF':'#7CFFB0',life:.9});}
-function summonerStep(u,g,dt){SRC=UDEF.summoner.names[g.tier];
+      flee:0,cowardly:t<=1,life:PET_LIFE,air:false,phT:5,cd:.5+Math.random(),slot:Math.random()*TAU,home:[x,y],rt:0});});
+  for(const m of G.mons)if(!m.dead&&Math.hypot(m.x-tx,m.y-ty)<=1.5)m.stun=Math.max(m.stun,1);   /* 소환 자리 1칸 안 몬스터 1초 기절 */
+  G.fx.push({k:'boom',x:tx,y:ty,t:0,r:1.5,c:t>=2?'#B77BFF':'#7CFFB0',life:.9});G.fx.push({k:'summon',x:tx,y:ty,t:0,life:1,c:t>=2?'#B77BFF':'#7CFFB0'});
+  if(G.fx.length<150)G.fx.push({k:'tx',s:'소환!',x:tx,y:ty,t:0,life:.8});}
+function summonerStep(u,g,dt){SRC=UDEF.summoner.names[g.tier];const hx=g.cell[0]+.5,hy=g.cell[1]+.5;
   if(G.state==='wave'){g.sumT=(g.sumT??1)-dt;
-    if(g.sumT<=0){if(petPacks(g).size<2){summonPack(u,g);u.st='attack';u.aph=0;u.cast=1.2;}g.sumT=petPacks(g).size?30:20;}
+    if(g.sumT<=0){const packs=petPacks(g).size;
+      if(packs>=2)g.sumT=1;
+      else{const tg=nearestMon(hx,hy,SUM_R,0,m=>m.mv!=='fly')||(g.tier>=2?nearestMon(hx,hy,SUM_R):null);   /* 몬스터를 발견하면 그 자리에 소환 */
+        if(tg){summonPack(u,g,tg);u.st='attack';u.aph=0;u.cast=1.2;u.face=faceTo(tg.x-u.x,tg.y-u.y,u.face);g.sumT=petPacks(g).size>1||packs?30:20;}else g.sumT=.25;}}
     else if(g.sumT>20&&!petPacks(g).size)g.sumT=20;}   /* 모두 쓰러지면 20초 */
   /* 치유: 아주 조금, 천천히 · 1단계 1명 → 2단계 3명 → 3단계 5명 → 4단계 범위 안 모두 */
-  g.healT=(g.healT??5)-dt;if(g.healT<=0){g.healT=5;const hx=g.cell[0]+.5,hy=g.cell[1]+.5;
+  g.healT=(g.healT??5)-dt;if(g.healT<=0){g.healT=5;
     const cand=[...G.pets.filter(p=>p.own===g&&p.hp>0&&p.hp<p.max),...allMembers().filter(v=>v.hp>0&&v.hp<v.max&&Math.hypot(v.x-hx,v.y-hy)<=PET_R)].sort((a,b)=>a.hp/a.max-b.hp/b.max);
     const n=[1,3,5,99][g.tier];for(const v of cand.slice(0,n)){v.hp=Math.min(v.max,v.hp+1+g.tier*.3);if(G.fx.length<150)G.fx.push({k:'heal',x:v.x,y:v.y,z:v.z||0,t:0,life:.9});}}
   if(u.cast>0){u.cast-=dt;u.aph=Math.min(.99,u.aph+dt/1.2);}else{u.st='idle';u.ph=(u.ph+dt/2.2)%1;}}
+/* 땅 소환수: 4칸 안 몬스터를 찾아가 둘러싸고 공격 · 없으면 제자리 */
+function petMelee(p,P_,dt,reachK,atkDur,splash,R=PET_R){
+  p.rt-=dt;if(p.tg&&(p.tg.dead||p.tg.hp<=0||p.tg.mv==='fly'||Math.hypot(p.tg.x-p.home[0],p.tg.y-p.home[1])>R+1))p.tg=null;   /* 소환된 자리 4칸(드래곤 8칸) 안에서만 싸워요 */
+  if(!p.tg&&p.rt<=0){p.rt=.25;p.tg=nearestMon(p.x,p.y,R,0,m=>m.mv!=='fly'&&Math.hypot(m.x-p.home[0],m.y-p.home[1])<=R);}
+  if(p.tg){const m=p.tg,reach=(m.big?.75:.48)*reachK,tx=m.x+Math.cos(p.slot)*reach,ty=m.y+Math.sin(p.slot)*reach,d=Math.hypot(tx-p.x,ty-p.y);
+    if(d>.14){goTo(p,tx,ty,P_.spd,dt);p.st='move';p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);p.aph=0;}
+    else{p.vx*=.6;p.vy*=.6;p.st='attack';p.face=faceTo(m.x-p.x,m.y-p.y,p.face);const prev=p.aph;p.aph=(p.aph+dt/atkDur)%1;
+      if(prev<.5&&p.aph>=.5){if(splash){for(const q of G.mons)if(!q.dead&&q.mv!=='fly'&&Math.hypot(q.x-m.x,q.y-m.y)<.8)hurt(q,p.dmg*.7);}else hurt(m,p.dmg);if(!isBreaker(m)&&(!m.hunt||m.hunt.hp<=0))m.hunt=p;}}}
+  else{const d=Math.hypot(p.home[0]-p.x,p.home[1]-p.y);if(d>1.2){goTo(p,p.home[0],p.home[1],P_.spd*.6,dt);p.st='move';p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);}else{p.vx=0;p.vy=0;p.st='idle';p.ph=(p.ph+dt/2.2)%1;}}}
 function petsStep(dt){if(!G.pets.length)return;
-  for(const p of G.pets){if(p.hp<=0)continue;const P_=PET[p.k],g=p.own,hx=g.cell[0]+.5,hy=g.cell[1]+.5;SRC=UDEF.summoner.names[g.tier];
-    p.life-=dt;if(p.life<=0||!G.groups.includes(g)||!g.mem.length){p.hp=0;p.quiet=true;continue;}
-    if(p.cowardly){const B=G.mons.find(m=>!m.dead&&isBossG(m.m.grade)&&Math.hypot(m.x-p.x,m.y-p.y)<3);if(B)p.flee=2;}
-    if(p.flee>0){p.flee-=dt;p.tg=null;goTo(p,hx,hy,P_.spd*1.2,dt);p.st='move';p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);p.z=surfZ(GM,p.x,p.y);continue;}
-    if(p.tg&&(p.tg.dead||p.tg.hp<=0||Math.hypot(p.tg.x-hx,p.tg.y-hy)>PET_R+1||(!P_.fly&&p.tg.mv==='fly')))p.tg=null;
-    if(!p.tg)p.tg=nearestMon(hx,hy,PET_R,0,m=>P_.fly||m.mv!=='fly');
+  for(const p of G.pets){if(p.hp<=0)continue;const P_=PET[p.k],g=p.own;SRC=UDEF.summoner.names[g.tier];
+    p.life-=dt;if(p.life<=0||!G.groups.includes(g)||!g.mem.length){p.hp=0;p.expired=true;continue;}   /* 30초가 지나면 사라져요 */
+    if(p.cowardly){const B=G.mons.find(m=>!m.dead&&isBossG(m.m.grade)&&Math.hypot(m.x-p.x,m.y-p.y)<3);if(B){p.flee=2;p.fx_=B;}}
+    if(p.flee>0){p.flee-=dt;p.tg=null;const B=p.fx_,dx=p.x-(B?B.x:p.x),dy=p.y-(B?B.y:p.y-1),d=Math.hypot(dx,dy)||1;goTo(p,p.x+dx/d*1.5,p.y+dy/d*1.5,P_.spd*1.2,dt);p.st='move';p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);p.z=surfZ(GM,p.x,p.y);continue;}   /* 보스 반대쪽으로 도망 */
     if(P_.fly){/* 드래곤: 땅에서 5초 근접 공격 → 하늘로 날아올라 5초 동안 숨결 스킬 → 다시 땅으로 */
-      p.phT=(p.phT??5)-dt;if(p.phT<=0){p.air=!p.air;p.phT=5;p.tg=null;p.cd=.4;
-        if(!p.air){const cx=Math.floor(p.x),cy=Math.floor(p.y);if(!inb(GM,cx,cy)||G.walls.has(key(cx,cy))||!passT(GM.g[cy][cx])){const c=freeGroundNear(cx,cy)||freeGroundNear(g.cell[0],g.cell[1]);if(c){p.x=c[0]+.5;p.y=c[1]+.5;}}}
+      p.phT-=dt;if(p.phT<=0){p.air=!p.air;p.phT=5;p.tg=null;p.cd=.4;
+        if(!p.air&&!okGround(p.x,p.y)){const c=freeGroundNear(Math.floor(p.x),Math.floor(p.y));if(c){p.x=c[0]+.5;p.y=c[1]+.5;}}
         if(G.fx.length<150)G.fx.push({k:'tx',s:p.air?'비상!':'착지',x:p.x,y:p.y,t:0,life:.6});}
       const gz=inb(GM,Math.floor(p.x),Math.floor(p.y))?surfZ(GM,p.x,p.y):0;p.zo=p.zo??-.7;p.zo+=((p.air?.5:-.7)-p.zo)*Math.min(1,dt*3);
-      if(p.air){if(p.tg&&(p.tg.dead||p.tg.hp<=0||Math.hypot(p.tg.x-hx,p.tg.y-hy)>PET_R+1))p.tg=null;if(!p.tg)p.tg=nearestMon(hx,hy,PET_R);
-        const tx=p.tg?p.tg.x+Math.cos(G.t*1.3+p.pack)*.8:hx+Math.cos(G.t*.9+p.pack)*1.4,ty=p.tg?p.tg.y+1.2+Math.sin(G.t*1.3+p.pack)*.6:hy+Math.sin(G.t*.9+p.pack)*1.4;   /* 주변을 날아다니며 */
+      if(p.air){if(p.tg&&(p.tg.dead||p.tg.hp<=0||Math.hypot(p.tg.x-p.home[0],p.tg.y-p.home[1])>DRAGON_R+1))p.tg=null;if(!p.tg)p.tg=nearestMon(p.home[0],p.home[1],DRAGON_R);
+        const tx=p.tg?p.tg.x+Math.cos(G.t*1.3+p.pack)*.8:p.home[0]+Math.cos(G.t*.9+p.pack)*1.2,ty=p.tg?p.tg.y+1.2+Math.sin(G.t*1.3+p.pack)*.6:p.home[1]+Math.sin(G.t*.9+p.pack)*1.2;   /* 주변을 날아다니며 */
         const dx=tx-p.x,dy=ty-p.y,d=Math.hypot(dx,dy);if(d>.1){const v=Math.min(d,P_.spd*1.3*dt);p.x+=dx/d*v;p.y+=dy/d*v;}
         if(p.tg){p.face=faceTo(p.tg.x-p.x,p.tg.y-p.y,p.face);p.st='attack';p.aph=(p.aph+dt/1.2)%1;p.cd-=dt;if(p.cd<=0){p.cd=1.2;dragonBreath(p,p.tg);}}else{p.st='move';p.walk+=dt/.6;p.face=faceTo(dx,dy,p.face);}
         p.z=gz+p.zo;continue;}
-      if(p.tg&&(p.tg.dead||p.tg.hp<=0||p.tg.mv==='fly'||Math.hypot(p.tg.x-hx,p.tg.y-hy)>PET_R+1))p.tg=null;if(!p.tg)p.tg=nearestMon(hx,hy,PET_R,0,m=>m.mv!=='fly');
-      if(p.tg){const m=p.tg,d=Math.hypot(m.x-p.x,m.y-p.y);
-        if(d>.8){goTo(p,m.x,m.y,P_.spd*.8,dt);p.st='move';p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);}
-        else{p.st='attack';p.face=faceTo(m.x-p.x,m.y-p.y,p.face);const prev=p.aph;p.aph=(p.aph+dt/1.1)%1;if(prev<.5&&p.aph>=.5){for(const q of G.mons)if(!q.dead&&q.mv!=='fly'&&Math.hypot(q.x-m.x,q.y-m.y)<.8)hurt(q,p.dmg*.7);if(!m.hunt||m.hunt.hp<=0)m.hunt=p;}}}   /* 물기·발톱 */
-      else{const d=goTo(p,hx,hy+1,P_.spd*.6,dt);p.st=d>.15?'move':'idle';if(p.st==='move'){p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);}else{p.ph=(p.ph+dt/2.2)%1;p.face=0;}}
-      p.z=gz+p.zo;continue;}
-    if(p.tg){const m=p.tg,d=Math.hypot(m.x-p.x,m.y-p.y),reach=(m.big?.8:.5);
-      if(d>reach){goTo(p,m.x,m.y,P_.spd,dt);p.st='move';p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);}
-      else{p.st='attack';p.face=faceTo(m.x-p.x,m.y-p.y,p.face);const prev=p.aph;p.aph=(p.aph+dt/P_.dur)%1;if(prev<.5&&p.aph>=.5){hurt(m,p.dmg);if(!isBreaker(m)&&(!m.hunt||m.hunt.hp<=0))m.hunt=p;}}}
-    else{const d=goTo(p,hx+Math.cos(p.pack)*.3,hy+.9,P_.spd*.7,dt);p.st=d>.15?'move':'idle';if(p.st==='move'){p.walk+=dt/.6;p.face=faceTo(p.vx,p.vy,p.face);}else{p.ph=(p.ph+dt/2.2)%1;p.face=0;}}
-    p.z=surfZ(GM,p.x,p.y);}
-  for(const p of G.pets)if(p.hp<=0&&!p.gone){p.gone=true;if(!p.quiet&&G.fx.length<150)G.fx.push({k:'die',x:p.x,y:p.y,t:0,z:p.z||0});}
+      petMelee(p,P_,dt,1.5,1.1,true,DRAGON_R);p.z=gz+p.zo;continue;}
+    petMelee(p,P_,dt,1,P_.dur,false);p.z=surfZ(GM,p.x,p.y);}
+  for(const p of G.pets)if(p.hp<=0&&!p.gone){p.gone=true;if(G.fx.length<150)G.fx.push(p.expired?{k:'boom',x:p.x,y:p.y,t:0,r:.5,c:'#7CFFB0',life:.5}:{k:'die',x:p.x,y:p.y,t:0,z:p.z||0});}
   G.pets=G.pets.filter(p=>!p.gone);}
 function dragonBreath(p,m){const k=p.k==='elder'?['fire','ice','bolt'][Math.floor(G.t/2)%3]:p.k,dm=p.dmg;
   if(k==='fire'){for(const q of G.mons)if(!q.dead&&Math.hypot(q.x-m.x,q.y-m.y)<1)hurt(q,dm*fireK(),false);G.fires.push({src:SRC,x:m.x,y:m.y,t:0});G.fx.push({k:'boom',x:m.x,y:m.y,t:0,r:1,c:'#FF7A2F'});}
@@ -2307,6 +2313,7 @@ function draw(now){ctx=mainCtx;W=VW;H=VH;
     else if(f.k==='miss')popText([p[0],p[1]-14-f.t*16],'회피',a);
     else if(f.k==='pierce')popText([p[0],p[1]-18-f.t*16],'관통!',Math.min(1,a*2));
     else if(f.k==='tx')popText([p[0],p[1]-18-f.t*16],f.s,Math.min(1,a*2));
+    else if(f.k==='summon'){const r=.4+f.t*1.4;ctx.globalAlpha=a;const pts=[];for(let i=0;i<32;i++){const an=i/32*TAU+f.t*3;pts.push(P(f.x+Math.cos(an)*r,f.y+Math.sin(an)*r*.9,.05));}poly(pts,hexA(f.c,.18),hexA(f.c,.95),2);for(let i=0;i<6;i++){const an=i/6*TAU-f.t*4,q=P(f.x+Math.cos(an)*r*.7,f.y+Math.sin(an)*r*.63,.05+f.t*.8);ctx.fillStyle=f.c;ctx.fillRect(q[0]-1.5,q[1]-1.5,3,3);}ctx.globalAlpha=1;}   /* 소환 마법진 */
     else if(f.k==='heal'){const q=P(f.x,f.y,(f.z||0)+.6+f.t*1.2);ctx.globalAlpha=Math.min(1,a*1.6);ctx.fillStyle='#5BE08A';ctx.fillRect(q[0]-1.5,q[1]-5,3,10);ctx.fillRect(q[0]-5,q[1]-1.5,10,3);ctx.globalAlpha=1;}   /* 치유 + */
     else if(f.k==='chain'){ctx.globalAlpha=a;ctx.strokeStyle='#FFF27A';ctx.lineWidth=2.2;ctx.beginPath();f.pts.forEach((pt,i)=>{const q=P(pt[0],pt[1],pt[2]);if(!i)ctx.moveTo(q[0],q[1]);else{const o=P(f.pts[i-1][0],f.pts[i-1][1],f.pts[i-1][2]);ctx.lineTo((o[0]+q[0])/2+(hash(i,Math.floor(f.t*30))-.5)*10,(o[1]+q[1])/2+(hash(i+3,Math.floor(f.t*30))-.5)*10);ctx.lineTo(q[0],q[1]);}});ctx.stroke();ctx.globalAlpha=1;}   /* 번개 연쇄 */
     else if(f.k==='cry'){ring([f.x,f.y],.5+f.t*3.5,'#FFD23F',a*.7);popText([p[0],p[1]-26-f.t*10],'함성!',Math.min(1,a*2));}
