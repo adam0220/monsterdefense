@@ -2346,9 +2346,10 @@ function draw(now){ctx=mainCtx;W=VW;H=VH;
   for(const p of G.pets){if(!PET[p.k].fly||p.hp<=0)continue;const cx=Math.floor(p.x),cy=Math.floor(p.y),gz=inb(GM,cx,cy)?surfZ(GM,p.x,p.y):0,h=Math.max(0,p.z-gz-dragonZ(p.k)),s=PET_SC*SUM[p.k].sc,r=.5*s*(1-Math.min(.5,h*.12)),a=.28*(1-Math.min(.6,h*.18));   /* 드래곤 그림자: 언제나 땅 위 · 높이 날수록 작고 옅게 */
     poly([P(p.x-r,p.y-r*.8,gz+.01),P(p.x+r,p.y-r*.8,gz+.01),P(p.x+r+.05,p.y+r*.8+.05,gz+.01),P(p.x-r+.05,p.y+r*.8+.05,gz+.01)],`rgba(20,40,60,${a})`);}
   for(const o of list){const p=P(o.x,o.y,o.z),s=o.s;let img=s.c;const m=o.m;
-    if(m){if(m.frozen>0)img=tinted(s,'rgba(140,215,255,.55)');else if(m.burn>0&&Math.sin(now/90+m.ph*7)>-.3)img=tinted(s,'rgba(255,70,20,.5)');else if(m.shock>0&&Math.sin(now/60+m.ph*9)>.1)img=tinted(s,'rgba(255,240,80,.6)');}
+    if(m){if(inWater(m))img=tinted(s,'rgba(40,130,230,.55)');   /* 물을 건너는 몬스터: 파랗게 물든 모습만 */
+      else if(m.frozen>0)img=tinted(s,'rgba(140,215,255,.55)');else if(m.burn>0&&Math.sin(now/90+m.ph*7)>-.3)img=tinted(s,'rgba(255,70,20,.5)');else if(m.shock>0&&Math.sin(now/60+m.ph*9)>.1)img=tinted(s,'rgba(255,240,80,.6)');}
     else if(o.u&&o.u.hitfl>0){o.u.hitfl-=.016;img=tinted(s,'rgba(255,80,80,.45)');}
-    ctx.drawImage(img,p[0]-s.ax,p[1]-s.ay,s.w,s.h);if(m&&inWater(m)){const r=Math.max(6,s.w*.32);ctx.fillStyle='rgba(70,160,225,.78)';ctx.beginPath();ctx.ellipse(p[0],p[1]-2,r,r*.42,0,0,7);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=1.2;ctx.beginPath();ctx.ellipse(p[0],p[1]-2,r*(1.1+.15*Math.sin(now/200+m.ph*5)),r*.5,0,0,7);ctx.stroke();}   /* 헤엄: 물결 */
+    ctx.drawImage(img,p[0]-s.ax,p[1]-s.ay,s.w,s.h);
     if(m&&(m.burn>0||m.shock>0||m.frozen>0))statusFx(o,p,now);}
   /* 탭한 칸 표시 — 유닛·성벽보다 위에 그려서 성벽 위에서도 잘 보이게. 성벽이면 블록 전체 윤곽을 반짝임 */
   if(G.tapMark&&now-G.tapMark.t0<900){const {x,y}=G.tapMark,w=G.walls.get(key(x,y)),b=GM.g[y][x].z,top=b+(w?(w.gate?1:w.lv):0)+.03,q=(now-G.tapMark.t0)/900,e=.1*q,a=1-q;
