@@ -1414,7 +1414,7 @@ const USTAT={heavy:{spd:1.6,dmg:.45,dur:1.3},spear:{spd:1.9,dmg:.6,dur:1.1},lanc
   icemage:{dmg:2.4,dur:3,rg:5.5},mage:{dmg:3.6,dur:3,rg:6},summoner:{dmg:.5,dur:3,rg:4},adam:{spd:2.4,dmg:4,dur:1.2}};
 const VOLLEY=['archer','crossbow','ranger','hunter'];
 const START_COINS=[600,700,800,900,1000,1100,1200,1300,1400,1500];   /* 시작 코인 */
-/* 몬스터 등급별 기본값 (화면 숫자 = 값×10) · 체력은 10단계에서 2.2배(보스는 단계 증가 없음) · 공격력은 10단계에서 2배 · 맵마다 +35% */const MG={일반:{hp:9.8,spd:.9,dmg:.8,wall:5,coin:.6},특수:{hp:12.3,spd:.9,dmg:1.2,wall:6,coin:1.2},기병:{hp:13.5,spd:2.6,dmg:1.5,wall:6,coin:1.2},  마법:{hp:6.3,spd:.8,dmg:3,wall:6,coin:1.2},비행:{hp:20,spd:1,dmg:2.5,wall:0,coin:2},정예:{hp:30,spd:.72,dmg:4,wall:12,coin:3},  엘리트:{hp:75,spd:.45,dmg:6,wall:30,coin:9},준보스:{hp:525,spd:.4,dmg:15,wall:80,coin:100},보스:{hp:2600,spd:.3,dmg:26,wall:110,coin:100},'최종 보스':{hp:11000,spd:.3,dmg:40,wall:160,coin:100},공성:{hp:60,spd:.35,dmg:0,wall:0,coin:4}};const isBossG=g=>g==='보스'||g==='최종 보스'||g==='준보스';const atkMul=()=>1+(G.stage-1)/9;
+/* 몬스터 등급별 기본값 (화면 숫자 = 값×10) · 체력은 10단계에서 2.2배(보스는 단계 증가 없음) · 공격력은 10단계에서 2배 · 맵마다 +35% */const MG={일반:{hp:9.8,spd:.9,dmg:.8,wall:5,coin:.6},특수:{hp:12.3,spd:.9,dmg:1.2,wall:6,coin:1.2},기병:{hp:13.5,spd:2.6,dmg:1.5,wall:6,coin:1.2},  마법:{hp:6.3,spd:.8,dmg:3,wall:6,coin:1.2},비행:{hp:20,spd:1,dmg:2.5,wall:0,coin:2},정예:{hp:30,spd:.72,dmg:4,wall:12,coin:3},  엘리트:{hp:75,spd:.45,dmg:6,wall:30,coin:9},준보스:{hp:525,spd:.4,dmg:15,wall:80,coin:100},보스:{hp:2600,spd:.3,dmg:26,wall:110,coin:100},'최종 보스':{hp:11000,spd:.3,dmg:40,wall:160,coin:100},공성:{hp:30,spd:.35,dmg:0,wall:0,coin:4}};const isBossG=g=>g==='보스'||g==='최종 보스'||g==='준보스';const atkMul=()=>1+(G.stage-1)/9;
 /* 유닛을 노리는 몬스터 (짧은 길만 가지 않고 근처 유닛에게 달려듦) */
 const AGGRO=/전사|챔피언|광전사|기사|투사|둠가드|구울|늑대|지옥견|헬하운드|홉고블린|암살자|오우거|설인|매머드|어보미네이션/;
 /* 벽 위 유닛을 쏘는 몬스터 */
@@ -2009,22 +2009,26 @@ function o_col(m){return m.name==='임프'?'#FF7A2F':/마법|마도|샤먼|주�
    드래곤: 땅에서 날개 접고 4초 휴식 → 3칸 도약(부딪힌 몬스터 0.5초 기절) → 하늘 7초(4단계 10초) · 1.5칸 이상 떨어진 몬스터(공중 포함)에게 입에서 숨결 */
 const PET={wolf:{hp:9.6,dmg:.5,dur:.9,spd:2.4},bear:{hp:19.2,dmg:.9,dur:1.3,spd:1.7},fire:{hp:32,dmg:4,dur:2.2,spd:2.2,fly:1},ice:{hp:32,dmg:3.4,dur:2.2,spd:2.2,fly:1},bolt:{hp:32,dmg:3.6,dur:2.2,spd:2.2,fly:1}};
 const PET_SC=.7,PET_R=4,DRAGON_R=8,PET_LIFE=30,SUM_R=5,AIR_Z=2.7,GROUND_T=2.5,AIR_T=5,MIN_R=1.5;
-function petSprite(k,mode,face,ph){const f=fr(ph),big_=PET[k].fly?1.7:1.15;return sprite(`p|${k}|${mode}|${face}|${f}`,110*Math.max(1,SUM[k].sc*1.4)*big_*PET_SC,()=>{const ns=NOSH;NOSH=!!PET[k].fly;makeSummon(k,.5,.5,0,PET_SC,mode,(f+.5)/NF,face);NOSH=ns;});}   /* 드래곤 그림자는 땅에 따로 그려요 */
+function petSprite(k,mode,face,ph,sz=1){const f=fr(ph),big_=PET[k].fly?1.7:1.15;return sprite(`p|${k}|${mode}|${face}|${f}|${sz}`,110*Math.max(1,SUM[k].sc*1.4)*big_*PET_SC*sz,()=>{const ns=NOSH;NOSH=!!PET[k].fly;makeSummon(k,.5,.5,0,PET_SC*sz,mode,(f+.5)/NF,face);NOSH=ns;});}   /* 드래곤 그림자는 땅에 따로 그려요 */
 function petPacks(g){return new Set(G.pets.filter(p=>p.own===g&&p.hp>0).map(p=>p.pack));}
 const okGround=(x,y)=>{const cx=Math.floor(x),cy=Math.floor(y);return inb(GM,cx,cy)&&!isCastle(GM,cx,cy)&&!G.walls.has(key(cx,cy))&&passT(GM.g[cy][cx]);};
 function freeGroundNear(cx,cy){for(let r=1;r<=4;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;const x=cx+dx,y=cy+dy;if(okGround(x+.5,y+.5))return [x,y];}return null;}
 const dragonZ=k=>-.73*PET_SC*SUM[k].sc;   /* 땅에 내려앉은 드래곤 높이: 접은 다리가 땅에 닿게 (DRAKE 몸이 원래 .85 떠 있어서) */
 function summonPack(u,g,tg){const t=g.tier,pk=++G.pid,mul=1+t*.3,tx=tg.x,ty=tg.y,rnd=()=>['fire','ice','bolt'][Math.floor(Math.random()*3)];
-  const ks=t===0?['wolf','wolf','wolf']:t===1?Array(5).fill('bear'):t===2?[rnd()]:['fire','ice','bolt','bear','bear','bear'];
-  ks.forEach((k,i)=>{const P_=PET[k],boss=t>=3&&P_.fly;let x=tx,y=ty,ok=false;
+  const ks=t===0?['wolf','wolf','wolf']:t===1?Array(5).fill('bear'):t===2?[rnd()]:['bear','bear','bear','fire','ice','bolt'];
+  const fxAt=()=>{G.fx.push({k:'boom',x:tx,y:ty,t:0,r:1.5,c:t>=2?'#B77BFF':'#7CFFB0',life:.9});G.fx.push({k:'summon',x:tx,y:ty,t:0,life:1,c:t>=2?'#B77BFF':'#7CFFB0'});};
+  const make=(k,i)=>{if(!G.groups.includes(g)||!g.mem.length||G.state!=='wave')return;const P_=PET[k],boss=t>=3&&P_.fly;let x=tx,y=ty,ok=false;
     for(let tr=0;tr<12&&!ok;tr++){const a=i/ks.length*TAU+tr*.7,r=(P_.fly?1.8:.55+(i%3)*.3)+tr*.08;x=tx+Math.cos(a)*r;y=ty+Math.sin(a)*r;ok=okGround(x,y);}
     if(!ok){const c=freeGroundNear(Math.floor(tx),Math.floor(ty));if(!c)return;x=c[0]+.5;y=c[1]+.5;}
-    const hp=P_.hp*mul*(boss?2.2:1),dmg=P_.dmg*mul*(boss?2:1);   /* 소환군주의 드래곤: 체력 2.2배 · 공격 2배 */
-    G.pets.push({own:g,pack:pk,k,hero:true,pet:true,layer:0,x,y,z:0,hp,max:hp,dmg,tg:null,aph:0,face:0,vx:0,vy:0,walk:Math.random(),ph:Math.random(),st:'idle',sm:1,kb:0,
-      flee:0,cowardly:t<=1,life:t>=3?1e9:PET_LIFE,air:false,phT:GROUND_T,zo:P_.fly?dragonZ(k):0,R:P_.fly?(t>=3?10:DRAGON_R):PET_R,cd:.5+Math.random(),slot:Math.random()*TAU,orb:Math.random()*TAU,home:[x,y],rt:0});});
+    const giant=boss&&Math.random()<.1,sz=giant?2:1;   /* 소환군주: 10% 확률로 2배 크기 드래곤 (착륙하지 않아요 · 체력·공격 1.5배) */
+    const hp=P_.hp*mul*(boss?2.2:1)*(giant?1.5:1),dmg=P_.dmg*mul*(boss?2:1)*(giant?1.5:1);   /* 소환군주의 드래곤: 체력 2.2배 · 공격 2배 */
+    G.pets.push({own:g,pack:pk,k,hero:true,pet:true,layer:0,x,y,z:0,hp,max:hp,dmg,tg:null,aph:0,face:0,vx:0,vy:0,walk:Math.random(),ph:Math.random(),st:'idle',sm:1,kb:0,giant,sz,
+      flee:0,cowardly:t<=1,life:t>=3?1e9:PET_LIFE,air:false,phT:GROUND_T,zo:P_.fly?dragonZ(k):0,R:P_.fly?(t>=3?10:DRAGON_R):PET_R,cd:.5+Math.random(),slot:Math.random()*TAU,orb:Math.random()*TAU,home:[x,y],rt:0});
+    if(P_.fly&&i>0&&t>=3){fxAt();if(G.fx.length<150)G.fx.push({k:'tx',s:giant?'거대 드래곤!':'소환!',x:tx,y:ty,t:0,life:.9});}};
+  /* 소환군주의 드래곤은 한 번에 나오지 않고 1~2초씩 사이를 두고 하나씩 */
+  let delay=0;ks.forEach((k,i)=>{if(t>=3&&PET[k].fly){if(delay===0){make(k,i);delay=.001;}else{delay+=1+Math.random();(G.pend=G.pend||[]).push({t:delay,fn:()=>make(k,i)});}}else make(k,i);});
   for(const m of G.mons)if(!m.dead&&Math.hypot(m.x-tx,m.y-ty)<=1.5)m.stun=Math.max(m.stun,1);   /* 소환 자리 1칸 안 몬스터 1초 기절 */
-  G.fx.push({k:'boom',x:tx,y:ty,t:0,r:1.5,c:t>=2?'#B77BFF':'#7CFFB0',life:.9});G.fx.push({k:'summon',x:tx,y:ty,t:0,life:1,c:t>=2?'#B77BFF':'#7CFFB0'});
-  if(G.fx.length<150)G.fx.push({k:'tx',s:'소환!',x:tx,y:ty,t:0,life:.8});}
+  fxAt();if(G.fx.length<150)G.fx.push({k:'tx',s:'소환!',x:tx,y:ty,t:0,life:.8});}
 function summonerStep(u,g,dt){SRC=UDEF.summoner.names[g.tier];const hx=g.cell[0]+.5,hy=g.cell[1]+.5;
   const findTg=()=>nearestMon(hx,hy,SUM_R,0,m=>m.mv!=='fly')||(g.tier>=2?nearestMon(hx,hy,SUM_R):null);   /* 몬스터를 발견하면 그 자리에 소환 */
   const cast=tg=>{summonPack(u,g,tg);u.st='attack';u.aph=0;u.cast=1.2;u.face=faceTo(tg.x-u.x,tg.y-u.y,u.face);};
@@ -2055,7 +2059,7 @@ function petMelee(p,P_,dt){const R=p.R;
    → 하늘에서 3단계 5초 · 4단계 8초 동안 천천히 날며 1.5칸 이상 떨어진 몬스터(공중 포함)에게 숨결 → 다시 착륙 */
 const REST_T=4,TOFF_T=1,TOFF_D=3;   /* 땅 4초 휴식 · 3칸 달려가며 도약 (1초) */
 function dragonStep(p,P_,dt){const R=p.R,gz=inb(GM,Math.floor(p.x),Math.floor(p.y))?surfZ(GM,p.x,p.y):0,AIRT=p.own.tier>=3?10:7;   /* 하늘: 3단계 7초 · 4단계 10초 */
-  if(!p.mode2){p.mode2='rest';p.phT=.4;}   /* 소환되면 잠깐 숨 고르고 바로 도약 */
+  if(!p.mode2){if(p.giant){p.mode2='air';p.phT=1e9;p.air=true;}else{p.mode2='rest';p.phT=.4;}}   /* 소환되면 잠깐 숨 고르고 바로 도약 · 거대 드래곤은 곧장 하늘로, 착륙 안 함 */
   p.phT-=dt;
   if(p.mode2==='rest'){p.air=false;p.fold=true;p.tg=null;p.st='idle';p.ph=(p.ph+dt/2.2)%1;p.zo+=(dragonZ(p.k)-p.zo)*Math.min(1,dt*3);
     if(p.phT<=0){/* 도약 시작: 목표 쪽(없으면 바라보는 쪽)으로 3칸 */const t=nearestMon(p.x,p.y,R+2);let dx=t?t.x-p.x:[0,1,0,-1][p.face||0],dy=t?t.y-p.y:[1,0,-1,0][p.face||0];const d=Math.hypot(dx,dy)||1;
@@ -2069,8 +2073,8 @@ function dragonStep(p,P_,dt){const R=p.R,gz=inb(GM,Math.floor(p.x),Math.floor(p.
     if(p.phT<=0){p.mode2='air';p.air=true;p.phT=AIRT;p.zo=AIR_Z;p.cd=.3;}
     p.z=(inb(GM,Math.floor(p.x),Math.floor(p.y))?surfZ(GM,p.x,p.y):0)+p.zo;return;}
   /* 하늘 */
-  p.air=true;p.fold=false;p.zo+=(AIR_Z-p.zo)*Math.min(1,dt*2.5);const SPD=P_.spd*.55;   /* 하늘에서는 천천히 */
-  if(p.phT<=0){/* 착륙 */let lx=p.x,ly=p.y;if(!okGround(lx,ly)){const c=freeGroundNear(Math.floor(lx),Math.floor(ly));if(c){lx=c[0]+.5;ly=c[1]+.5;}}p.x=lx;p.y=ly;p.mode2='rest';p.phT=REST_T;p.air=false;p.tg=null;
+  p.air=true;p.fold=false;const AZ=AIR_Z+(p.giant?.8:0);p.zo+=(AZ-p.zo)*Math.min(1,dt*(p.giant?1.2:2.5));const SPD=P_.spd*.55;if(p.giant)p.phT=1e9;   /* 하늘에서는 천천히 */
+  if(p.phT<=0){/* 착륙 */let lx=p.x,ly=p.y;if(!okGround(lx,ly)){const c=freeGroundNear(Math.floor(lx),Math.floor(ly));if(c){lx=c[0]+.5;ly=c[1]+.5;}}p.x=lx;p.y=ly;p.mode2='rest';p.phT=2+Math.random()*3;p.air=false;p.tg=null;
     if(G.fx.length<150)G.fx.push({k:'tx',s:'착지',x:p.x,y:p.y,t:0,life:.6});p.z=gz+p.zo;return;}
   if(p.tg&&(p.tg.dead||p.tg.hp<=0||Math.hypot(p.tg.x-p.home[0],p.tg.y-p.home[1])>R+1))p.tg=null;
   p.rt-=dt;if(!p.tg&&p.rt<=0){p.rt=.25;p.tg=nearestMon(p.x,p.y,R+2,0,m=>Math.hypot(m.x-p.home[0],m.y-p.home[1])<=R);}   /* 공중 몬스터도 공격 */
@@ -2090,7 +2094,7 @@ function petsStep(dt){if(!G.pets.length)return;
   for(const p of G.pets)if(p.hp<=0&&!p.gone){p.gone=true;if(G.fx.length<150)G.fx.push(p.expired?{k:'boom',x:p.x,y:p.y,t:0,r:.5,c:'#7CFFB0',life:.5}:{k:'die',x:p.x,y:p.y,t:0,z:p.z||0});}
   G.pets=G.pets.filter(p=>!p.gone);}
 /* 드래곤 입 위치 (DRAKE: 머리가 앞쪽 +0.82, 높이 1.27 · 바라보는 방향으로 돌려요) */
-function mouthOf(p){const s=PET_SC*SUM[p.k].sc,d=.82*s,F=[[0,1],[1,0],[0,-1],[-1,0]][p.face||0];return [p.x+F[0]*d,p.y+F[1]*d,p.z+1.27*s];}
+function mouthOf(p){const s=PET_SC*SUM[p.k].sc*(p.sz||1),d=.82*s,F=[[0,1],[1,0],[0,-1],[-1,0]][p.face||0];return [p.x+F[0]*d,p.y+F[1]*d,p.z+1.27*s];}
 const dk=q=>(q.big||isBossG(q.m.grade))?.7:1;   /* 드래곤: 덩치 큰 몬스터·보스에게 피해 30% 감소 */
 /* 레드·얼음 드래곤 브레스: 입에서 불·얼음 줄기가 쭉 뿜어져 목표에 닿아요 · 1.1초 동안 0.18초마다 광역 피해
    레드: 끝에 불길 3개 · 얼음: 맞은 몬스터 2.5초 감속 */
@@ -2329,7 +2333,7 @@ function draw(now){ctx=mainCtx;W=VW;H=VH;
   const list=[];
   for(const g of G.groups){const sc=isMagic(g.type)?.66:.42;
     for(const u of g.mem){const md=u.st,ph=md==='attack'?u.aph:md==='move'?u.walk:u.ph;list.push({x:u.x,y:u.y,z:u.z,s:unitSprite(g.type,g.tier,md,u.face,ph,sc),u});}}
-  for(const p of G.pets){const md=p.fold?'fold':p.st==='attack'?'attack':p.st==='move'?'move':'idle';list.push({x:p.x,y:p.y,z:p.z,s:petSprite(p.k,md,p.face,md==='attack'?p.aph:md==='move'?p.walk:p.ph),u:p});}   /* 소환수 */
+  for(const p of G.pets){const md=p.fold?'fold':p.st==='attack'?'attack':p.st==='move'?'move':'idle';list.push({x:p.x,y:p.y,z:p.z,s:petSprite(p.k,md,p.face,md==='attack'?p.aph:md==='move'?p.walk:p.ph,p.sz||1),u:p});}   /* 소환수 */
   if(G.adam&&G.adam.hp>0){const a=G.adam;list.push({x:a.x,y:a.y,z:a.z,s:unitSprite('adam',a.up?1:0,a.st,a.face,a.st==='attack'?a.aph:a.st==='move'?a.walk:a.ph,.62),u:a});}
   for(const m of G.mons){const md=m.st==='attack'?'attack':'move';list.push({x:m.x,y:m.y,z:monZ(m),s:monSprite(m.m,md,m.face,m.ph,m.leader?2:1),m});}
   const occ=new Set();for(const o of list)occ.add(Math.floor(o.x)+','+Math.floor(o.y));const IX=cam==='top'?[-1,0,1]:[-2,-1,0,1];
@@ -2343,7 +2347,7 @@ function draw(now){ctx=mainCtx;W=VW;H=VH;
   if(gatesNow().length>2)list.push({x:GM.sx3+1,y:GM.H-.26,z:0,s:portalSprite(3),d:depth(GM.sx3+1,GM.H-.26,0)});
   for(const o of list)if(o.d===undefined)o.d=depth(o.x,o.y,o.z);
   list.sort((a,b)=>a.d-b.d);
-  for(const p of G.pets){if(!PET[p.k].fly||p.hp<=0)continue;const cx=Math.floor(p.x),cy=Math.floor(p.y),gz=inb(GM,cx,cy)?surfZ(GM,p.x,p.y):0,h=Math.max(0,p.z-gz-dragonZ(p.k)),s=PET_SC*SUM[p.k].sc,r=.5*s*(1-Math.min(.5,h*.12)),a=.28*(1-Math.min(.6,h*.18));   /* 드래곤 그림자: 언제나 땅 위 · 높이 날수록 작고 옅게 */
+  for(const p of G.pets){if(!PET[p.k].fly||p.hp<=0)continue;const cx=Math.floor(p.x),cy=Math.floor(p.y),gz=inb(GM,cx,cy)?surfZ(GM,p.x,p.y):0,h=Math.max(0,p.z-gz-dragonZ(p.k)),s=PET_SC*SUM[p.k].sc*(p.sz||1),r=.5*s*(1-Math.min(.5,h*.12)),a=.28*(1-Math.min(.6,h*.18));   /* 드래곤 그림자: 언제나 땅 위 · 높이 날수록 작고 옅게 */
     poly([P(p.x-r,p.y-r*.8,gz+.01),P(p.x+r,p.y-r*.8,gz+.01),P(p.x+r+.05,p.y+r*.8+.05,gz+.01),P(p.x-r+.05,p.y+r*.8+.05,gz+.01)],`rgba(20,40,60,${a})`);}
   for(const o of list){const p=P(o.x,o.y,o.z),s=o.s;let img=s.c;const m=o.m;
     if(m){if(inWater(m))img=tinted(s,'rgba(40,130,230,.55)');   /* 물을 건너는 몬스터: 파랗게 물든 모습만 */
